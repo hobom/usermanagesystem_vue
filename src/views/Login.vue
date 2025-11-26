@@ -1,8 +1,8 @@
 <template>
-    <div className="login">
+    <div class="login">
 
-        <el-form ref="loginRef" :model="loginForm" :rules="loginRules" className="login-form">
-            <h3 className="title">Django后台管理系统</h3>
+        <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
+            <h3 class="title">Django后台管理系统</h3>
             <el-form-item prop="username">
                 <el-input
                         v-model="loginForm.username"
@@ -31,7 +31,7 @@
             </el-form-item>
 
 
-            <el-checkbox style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+            <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
             <el-form-item style="width:100%;">
                 <el-button
                         size="large"
@@ -44,7 +44,7 @@
             </el-form-item>
         </el-form>
         <!--  底部  -->
-        <div className="el-login-footer">
+        <div class="el-login-footer">
             <span>Copyright © 2013-2025 <a href="http://www.python222.com"
                                            target="_blank">python222.com</a> 版权所有.</span>
         </div>
@@ -53,14 +53,17 @@
 
 <script setup>
 import {ref} from 'vue'
-import requestUtil from '@/utils/request'
+import requestUtil from '@/util/request'
 import qs from 'qs'
 import {ElMessage} from "element-plus";
-
+import Cookies from "js-cookie";
+import {encrypt, decrypt} from "@/util/jsencrypt";
+import router from "@/router";
 
 const loginForm = ref({
     username: '',
-    password: ''
+    password: '',
+    rememberMe: false,
 })
 const loginRules = ref({
     username: [
@@ -81,7 +84,21 @@ const handleLogin = () => {
             if (data.code == 200) {
                 const token = data.token
                 ElMessage.success(data.info)
-                window.sessionStorage.setItem("token", token)
+                window.localStorage.setItem("token", token)
+                window.localStorage.setItem('currentUser', JSON.stringify(data.user))
+                window.localStorage.setItem("menuList", JSON.stringify(data.menuList))
+                // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
+                if (loginForm.value.rememberMe) {
+                    Cookies.set("username", loginForm.value.username, {expires: 30});
+                    Cookies.set("password", encrypt(loginForm.value.password), {expires: 30});
+                    Cookies.set("rememberMe", loginForm.value.rememberMe, {expires: 30});
+                } else {
+                    // 否则移除
+                    Cookies.remove("username");
+                    Cookies.remove("password");
+                    Cookies.remove("rememberMe");
+                }
+                router.replace('/')
             } else {
                 ElMessage.error(data.info)
             }
@@ -91,6 +108,19 @@ const handleLogin = () => {
         }
     })
 }
+
+function getCookie() {
+    const username = Cookies.get("username");
+    const password = Cookies.get("password");
+    const rememberMe = Cookies.get("rememberMe");
+    loginForm.value = {
+        username: username === undefined ? loginForm.value.username : username,
+        password: password === undefined ? loginForm.value.password : decrypt(password),
+        rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
+    };
+}
+
+getCookie();
 
 </script>
 
