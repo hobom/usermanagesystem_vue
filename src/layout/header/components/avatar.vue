@@ -9,7 +9,11 @@
     </span>
         <template #dropdown>
             <el-dropdown-menu>
-                <el-dropdown-item>个人中心</el-dropdown-item>
+                <el-dropdown-item>
+                    <router-link :to="{name: '个人中心'}">
+                        个人中心
+                    </router-link>
+                </el-dropdown-item>
                 <el-dropdown-item @click="logout">安全退出</el-dropdown-item>
             </el-dropdown-menu>
         </template>
@@ -21,6 +25,7 @@ import {ArrowDown} from '@element-plus/icons-vue'
 import {ref} from 'vue'
 import router from '@/router'
 import requestUtil, {getServerUrl} from '@/util/request'
+import store from "@/store";
 
 const currentUser = JSON.parse(localStorage.getItem("currentUser"))
 
@@ -28,6 +33,7 @@ const squareUrl = getServerUrl() + 'media/userAvatar/' + currentUser.avatar
 
 const logout = () => {
     window.localStorage.clear()
+    store.commit("RESET_TABS")
     router.replace("/login")
 }
 

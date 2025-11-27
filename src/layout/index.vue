@@ -10,6 +10,7 @@
                 </el-header>
                 <el-main>
                     <Tabs/>
+                    <router-view/>
                 </el-main>
                 <el-footer>
                     <Footer/>
@@ -28,29 +29,33 @@ import Tabs from '@/layout/tabs'
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 .app-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .sidebar-container {
-    background-color: #2d3a4b;
-    height: 100%;
+  background-color: #2d3a4b;
+  height: 100%;
 }
 
 .el-container {
-    height: 100%
+  height: 100%
 }
 
 .el-header {
-    padding-left: 0px;
-    padding-right: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 :deep(ul.el-menu) {
-    border-right-width: 0px
+  border-right-width: 0px
+}
+
+.el-tabs__content {
+  padding: 0px !important;;
 }
 </style>
