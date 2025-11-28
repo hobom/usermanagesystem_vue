@@ -83,9 +83,11 @@ const handleLogin = () => {
             let data = result.data;
             if (data.code == 200) {
                 const token = data.token
+                const currentUser = data.user
+                currentUser.roles = data.roles
                 ElMessage.success(data.info)
                 window.localStorage.setItem("token", token)
-                window.localStorage.setItem('currentUser', JSON.stringify(data.user))
+                window.localStorage.setItem('currentUser', JSON.stringify(currentUser))
                 window.localStorage.setItem("menuList", JSON.stringify(data.menuList))
                 // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
                 if (loginForm.value.rememberMe) {

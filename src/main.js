@@ -7,6 +7,7 @@ import router from './router'
 import store from './store'
 import '@/assets/styles/border.css'
 import '@/assets/styles/reset.css'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
 // createApp(App).use(store).use(router).use(ElementPlus).mount('#app')
 const app = createApp(App)
@@ -16,5 +17,7 @@ app.use(store)
 
 app.use(router)
 
-app.use(ElementPlus)
+app.use(ElementPlus, {
+    locale: zhCn,
+})
 app.mount('#app')
